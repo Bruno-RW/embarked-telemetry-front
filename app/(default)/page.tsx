@@ -99,7 +99,7 @@ const Home = () => {
   return (
     <main className="flex flex-col min-h-screen bg-zinc-50 dark:bg-black p-6">
       {/* Header */}
-      <div className="mb-6">
+      <div className="flex flex-col gap-2 mb-6">
         <h1 className="text-3xl font-bold tracking-tight">
           Painel de Telemetria
         </h1>
@@ -118,7 +118,7 @@ const Home = () => {
           iconColor="text-blue-500"
         />
         <StatCard
-          title="Localizações"
+          title="Cidades"
           value={stats.uniqueCities}
           description="Cidades únicas detectadas"
           icon={MapPin}
@@ -163,41 +163,53 @@ const Home = () => {
               Localizações Recentes
             </CardTitle>
           </CardHeader>
+
           <CardContent>
             <div className="space-y-4 max-h-[450px] overflow-y-auto">
               {telemetryData && telemetryData.length > 0 ? (
-                telemetryData.slice(0, 10).map((item) => (
-                  <div
-                    key={item.location?.id}
-                    className="flex items-start gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
-                  >
-                    <MapPin className="h-4 w-4 mt-1 text-primary shrink-0" />
-                    <div className="min-w-0 flex-1">
-                      <p className="font-medium text-sm truncate">
-                        {item.address?.city || "Cidade Desconhecida"}
-                      </p>
-                      <p className="text-xs text-muted-foreground truncate">
-                        {[item.address?.state, item.address?.country]
-                          .filter(Boolean)
-                          .join(", ") || "Localização desconhecida"}
-                      </p>
-                      {item.location?.date_time && (
-                        <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-                          <Clock className="h-3 w-3" />
-                          {new Date(item.location.date_time).toLocaleString()}
+                [...telemetryData]
+                  .sort((a, b) => {
+                    const dateA = a.location?.date_time
+                      ? new Date(a.location.date_time).getTime()
+                      : 0;
+                    const dateB = b.location?.date_time
+                      ? new Date(b.location.date_time).getTime()
+                      : 0;
+                    return dateB - dateA;
+                  })
+                  .slice(0, 10)
+                  .map((item) => (
+                    <div
+                      key={item.location?.id}
+                      className="flex items-start gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                    >
+                      <MapPin className="h-4 w-4 mt-1 text-primary shrink-0" />
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium text-sm truncate">
+                          {item.address?.city || "Cidade Desconhecida"}
                         </p>
-                      )}
-                      <div className="flex gap-2 mt-1 text-xs text-muted-foreground">
-                        <span>
-                          Lat: {item.location?.latitude?.toFixed(4) ?? "N/A"}
-                        </span>
-                        <span>
-                          Lng: {item.location?.longitude?.toFixed(4) ?? "N/A"}
-                        </span>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {[item.address?.state, item.address?.country]
+                            .filter(Boolean)
+                            .join(", ") || "Localização desconhecida"}
+                        </p>
+                        {item.location?.date_time && (
+                          <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+                            <Clock className="h-3 w-3" />
+                            {new Date(item.location.date_time).toLocaleString()}
+                          </p>
+                        )}
+                        <div className="flex gap-2 mt-1 text-xs text-muted-foreground">
+                          <span>
+                            Lat: {item.location?.latitude?.toFixed(4) ?? "N/A"}
+                          </span>
+                          <span>
+                            Lng: {item.location?.longitude?.toFixed(4) ?? "N/A"}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))
+                  ))
               ) : (
                 <p className="text-muted-foreground text-sm text-center py-4">
                   Nenhum dado de localização disponível

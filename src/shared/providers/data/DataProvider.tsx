@@ -19,7 +19,9 @@ const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     data: telemetryData,
     isLoading: telemetryLoading,
     error: telemetryError,
-  } = useSWR<TelemetryType[]>(TELEMETRY_API_URL, fetcher);
+  } = useSWR<TelemetryType[]>(TELEMETRY_API_URL, fetcher, {
+    refreshInterval: 120000, // Atualiza a cada 2 minutos
+  });
 
   const value: DataContextType = {
     telemetryData,
