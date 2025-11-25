@@ -2,7 +2,7 @@
 
 import { createContext } from "react";
 
-import { type TelemetryType } from "@/src/shared/types/data/telemetry";
+import { type TelemetryType } from "@shared/types/data/telemetry";
 
 export type DataContextType = {
   telemetryData?: TelemetryType[];

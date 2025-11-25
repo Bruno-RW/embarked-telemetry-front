@@ -1,6 +1,6 @@
 import { type FC } from "react";
 
-import DataProvider from "@shared/provider/data/DataProvider";
+import DataProvider from "@shared/providers/data/DataProvider";
 
 interface ContextProviderProps {
   children: React.ReactNode;
