@@ -26,13 +26,12 @@ import {
 const Home = () => {
   const { telemetryData, telemetryLoading, telemetryError } = useData();
 
-  // Compute statistics from telemetry data
   const stats = useMemo(() => {
     if (!telemetryData || telemetryData.length === 0) {
       return {
         totalRecords: 0,
         uniqueCities: 0,
-        uniqueCountries: 0,
+        uniqueRoads: 0,
         avgSatellites: 0,
         latestRecord: null,
         cities: [] as string[],
@@ -40,7 +39,7 @@ const Home = () => {
     }
 
     const cities = new Set<string>();
-    const countries = new Set<string>();
+    const roads = new Set<string>();
 
     let totalSatellites = 0;
     let satelliteCount = 0;
@@ -49,7 +48,7 @@ const Home = () => {
 
     telemetryData.forEach((item) => {
       if (item.address?.city) cities.add(item.address.city);
-      if (item.address?.country) countries.add(item.address.country);
+      if (item.address?.road) roads.add(item.address.road);
       if (item.location?.satellites) {
         totalSatellites += item.location.satellites;
         satelliteCount++;
@@ -65,7 +64,7 @@ const Home = () => {
     return {
       totalRecords: telemetryData.length,
       uniqueCities: cities.size,
-      uniqueCountries: countries.size,
+      uniqueRoads: roads.size,
       avgSatellites:
         satelliteCount > 0 ? Math.round(totalSatellites / satelliteCount) : 0,
       latestRecord: latestDate,
@@ -78,7 +77,7 @@ const Home = () => {
       <main className="flex flex-col min-h-screen bg-zinc-50 dark:bg-black p-6">
         <div className="flex items-center justify-center h-full">
           <div className="animate-pulse text-lg text-muted-foreground">
-            Loading dashboard data...
+            Carregando dados do painel...
           </div>
         </div>
       </main>
@@ -90,7 +89,7 @@ const Home = () => {
       <main className="flex flex-col min-h-screen bg-zinc-50 dark:bg-black p-6">
         <div className="flex items-center justify-center h-full">
           <div className="text-destructive">
-            Error loading data: {telemetryError.message}
+            Erro ao carregar dados: {telemetryError.message}
           </div>
         </div>
       </main>
@@ -102,40 +101,40 @@ const Home = () => {
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold tracking-tight">
-          Telemetry Dashboard
+          Painel de Telemetria
         </h1>
         <p className="text-muted-foreground">
-          Real-time overview of embedded telemetry data
+          Visão geral em tempo real dos dados de telemetria embarcada
         </p>
       </div>
 
       {/* Stats Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
         <StatCard
-          title="Total Records"
+          title="Total de Registros"
           value={stats.totalRecords}
-          description="Total telemetry entries"
+          description="Total de entradas de telemetria"
           icon={Database}
           iconColor="text-blue-500"
         />
         <StatCard
-          title="Locations"
+          title="Localizações"
           value={stats.uniqueCities}
-          description="Unique cities detected"
+          description="Cidades únicas detectadas"
           icon={MapPin}
           iconColor="text-green-500"
         />
         <StatCard
-          title="Countries"
-          value={stats.uniqueCountries}
-          description="Unique countries"
+          title="Ruas"
+          value={stats.uniqueRoads}
+          description="Ruas únicas detectadas"
           icon={Globe}
           iconColor="text-purple-500"
         />
         <StatCard
-          title="Avg. Satellites"
+          title="Média de Satélites"
           value={stats.avgSatellites}
-          description="Average satellites per reading"
+          description="Média de satélites por leitura"
           icon={Satellite}
           iconColor="text-orange-500"
         />
@@ -148,7 +147,7 @@ const Home = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <MapPin className="h-5 w-5" />
-              Location Map
+              Mapa de Localizações
             </CardTitle>
           </CardHeader>
           <CardContent className="h-[500px]">
@@ -161,7 +160,7 @@ const Home = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Building2 className="h-5 w-5" />
-              Recent Locations
+              Localizações Recentes
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -175,12 +174,12 @@ const Home = () => {
                     <MapPin className="h-4 w-4 mt-1 text-primary shrink-0" />
                     <div className="min-w-0 flex-1">
                       <p className="font-medium text-sm truncate">
-                        {item.address?.city || "Unknown City"}
+                        {item.address?.city || "Cidade Desconhecida"}
                       </p>
                       <p className="text-xs text-muted-foreground truncate">
                         {[item.address?.state, item.address?.country]
                           .filter(Boolean)
-                          .join(", ") || "Unknown location"}
+                          .join(", ") || "Localização desconhecida"}
                       </p>
                       {item.location?.date_time && (
                         <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
@@ -201,7 +200,7 @@ const Home = () => {
                 ))
               ) : (
                 <p className="text-muted-foreground text-sm text-center py-4">
-                  No location data available
+                  Nenhum dado de localização disponível
                 </p>
               )}
             </div>
@@ -212,7 +211,8 @@ const Home = () => {
       {/* Footer Stats */}
       {stats.latestRecord && (
         <div className="mt-6 text-sm text-muted-foreground text-center">
-          Last updated: {(stats.latestRecord as Date).toLocaleString()}
+          Última atualização:{" "}
+          {(stats.latestRecord as Date).toLocaleString("pt-BR")}
         </div>
       )}
     </main>

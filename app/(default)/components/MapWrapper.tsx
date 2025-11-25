@@ -9,7 +9,7 @@ const TelemetryMap = dynamic(
     ssr: false,
     loading: () => (
       <div className="h-full w-full min-h-[400px] rounded-lg bg-muted animate-pulse flex items-center justify-center">
-        <span className="text-muted-foreground">Loading map...</span>
+        <span className="text-muted-foreground">Carregando mapa...</span>
       </div>
     ),
   }

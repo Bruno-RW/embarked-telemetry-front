@@ -85,7 +85,7 @@ const TelemetryMap = ({ data }: TelemetryMapProps) => {
           <Popup>
             <div className="text-sm">
               <p className="font-semibold">
-                {item.address?.city || "Unknown City"}
+                {item.address?.city || "Cidade Desconhecida"}
               </p>
               {item.address?.state && (
                 <p className="text-muted-foreground">{item.address.state}</p>
